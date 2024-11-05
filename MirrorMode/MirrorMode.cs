@@ -41,7 +41,7 @@ namespace MirrorMode
             }
             Preferences.PropertyChanged += SaveSettingsOnFile;
 
-            new Models.SpriteBatchManager();
+            // new Models.SpriteBatchManager();
             Harmony harmony = new Harmony(HARMONY_IDENTIFIER);
 
             new Patching.InputComponent(harmony);
@@ -51,6 +51,7 @@ namespace MirrorMode
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
             new Patching.OldManEntity(harmony);
+            new Patching.DebugTeleport(harmony);
             // new Patching.RaymanWallEntity(harmony);
         }
 

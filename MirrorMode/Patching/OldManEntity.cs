@@ -1,6 +1,6 @@
 using HarmonyLib;
-using System.Reflection;
 using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using MirrorMode.Models;
 

@@ -1,34 +1,32 @@
 using HarmonyLib;
-using JK = JumpKing.Player;
+using System;
 using System.Reflection;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using MirrorMode.Models;
+using JumpKing;
 
-// namespace MirrorMode.Patching
-// {
-//     public class InputComponent
-//     {
-//         public InputComponent (Harmony harmony)
-//         {
-//             MethodInfo getState = typeof(JK.InputComponent).GetMethod(nameof(JK.InputComponent.GetState));
-//             harmony.Patch(
-//                 getState,
-//                 postfix: new HarmonyMethod(AccessTools.Method(typeof(InputComponent), nameof(MirrorRL)))
-//             );
-            
-//             MethodInfo GetPressedState = typeof(JK.InputComponent).GetMethod(nameof(JK.InputComponent.GetPressedState));
-//             harmony.Patch(
-//                 GetPressedState,
-//                 postfix: new HarmonyMethod(AccessTools.Method(typeof(InputComponent), nameof(MirrorRL)))
-//             );
-//         }
+namespace MirrorMode.Patching
+{
+    public class DebugTeleport
+    {
+        public DebugTeleport (Harmony harmony)
+        {
+            Type type = Type.GetType("JumpKing.Player.DebugTeleport, JumpKing");
+            MethodInfo Click = type.GetMethod("Click", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            harmony.Patch(
+                Click,
+                prefix: new HarmonyMethod(AccessTools.Method(typeof(DebugTeleport), nameof(MirrorPosition)))
+            );
+        }
 
-//         private static void MirrorRL(ref JK.InputComponent.State __result) 
-//         {
-//             if (MirrorMode.Preferences.IsEnabled)
-//             {
-//                 bool tmp = __result.right;
-//                 __result.right = __result.left;
-//                 __result.left = tmp;
-//             }
-//         }
-//     }
-// }
+        private static void MirrorPosition(ref MouseState mouse) 
+        {
+            if (MirrorMode.Preferences.IsEnabled)
+            {
+                int X = Game1.graphics.PreferredBackBufferWidth-mouse.X;
+                mouse = new MouseState(X, mouse.Y, mouse.ScrollWheelValue, mouse.LeftButton, mouse.MiddleButton, mouse.RightButton, mouse.XButton1, mouse.XButton2);
+            }
+        }
+    }
+}
