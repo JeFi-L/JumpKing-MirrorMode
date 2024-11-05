@@ -24,10 +24,10 @@ namespace MirrorMode
         [BeforeLevelLoad]
         public static void BeforeLevelLoad()
         {
-// #if DEBUG
-            // Debugger.Launch();
-            // Harmony.DEBUG = true;
-// #endif
+#if DEBUG
+            Debugger.Launch();
+            Harmony.DEBUG = true;
+#endif
 
             AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             try
@@ -36,7 +36,7 @@ namespace MirrorMode
             }
             catch (Exception e)
             {
-                // Debug.WriteLine($"[ERROR] [{IDENTIFIER}] {e.Message}");
+                Debug.WriteLine($"[ERROR] [{IDENTIFIER}] {e.Message}");
                 Preferences = new Preferences();
             }
             Preferences.PropertyChanged += SaveSettingsOnFile;
@@ -45,12 +45,12 @@ namespace MirrorMode
             Harmony harmony = new Harmony(HARMONY_IDENTIFIER);
 
             new Patching.InputComponent(harmony);
-            new Patching.LevelScreen(harmony);
+            new Patching.OldManEntity(harmony);
+            // new Patching.LevelScreen(harmony);
             new Patching.JumpGame(harmony);
             new Patching.FadeTextEntity(harmony);
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
-            new Patching.OldManEntity(harmony);
             new Patching.DebugTeleport(harmony);
             // new Patching.RaymanWallEntity(harmony);
         }
@@ -68,7 +68,7 @@ namespace MirrorMode
         #region Menu Items
         [PauseMenuItemSetting]
         [MainMenuItemSetting]
-        public static ToggleMirrorMode ToggleLJV(object factory, GuiFormat format)
+        public static ToggleMirrorMode ToggleMirrorMode(object factory, GuiFormat format)
         {
             return new ToggleMirrorMode();
         }
@@ -83,7 +83,7 @@ namespace MirrorMode
             }
             catch (Exception e)
             {
-                // Debug.WriteLine($"[ERROR] [{IDENTIFIER}] {e.Message}");
+                Debug.WriteLine($"[ERROR] [{IDENTIFIER}] {e.Message}");
             }
         }
 
