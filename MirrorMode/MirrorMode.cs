@@ -41,28 +41,15 @@ namespace MirrorMode
             }
             Preferences.PropertyChanged += SaveSettingsOnFile;
 
-            // new Models.SpriteBatchManager();
             Harmony harmony = new Harmony(HARMONY_IDENTIFIER);
 
             new Patching.InputComponent(harmony);
             new Patching.OldManEntity(harmony);
-            // new Patching.LevelScreen(harmony);
             new Patching.JumpGame(harmony);
             new Patching.FadeTextEntity(harmony);
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
             new Patching.DebugTeleport(harmony);
-            // new Patching.RaymanWallEntity(harmony);
-        }
-
-        [OnLevelStart]
-        public static void OnLevelStart()
-        {
-        }
-
-        [OnLevelEnd]
-        public static void OnLevelEnd()
-        {
         }
 
         #region Menu Items
@@ -72,7 +59,6 @@ namespace MirrorMode
         {
             return new ToggleMirrorMode();
         }
-
         #endregion
 
         private static void SaveSettingsOnFile(object sender, System.ComponentModel.PropertyChangedEventArgs args)
