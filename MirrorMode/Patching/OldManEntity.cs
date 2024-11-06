@@ -13,10 +13,13 @@ using JumpKing;
 
 namespace MirrorMode.Patching
 {
+    // Oldman entities with text_layer or oldman_layer setted to Foreground (e.g. cats in House of Nine Lives) will draw a copy at the end of
+    // JumpGame.Draw() (IForeground), so we need to handle those image mirroring manually.
     public class OldManEntity
     {
         private static FieldInfo m_settings;
         private static FieldInfo home_screen;
+        
         public OldManEntity (Harmony harmony)
         {
             Type type = Type.GetType("JumpKing.MiscEntities.OldManEntity, JumpKing");
@@ -42,55 +45,56 @@ namespace MirrorMode.Patching
             home_screen = typeof(JumpKing.MiscEntities.OldMan.OldManSettings).GetField("home_screen");
         }
 
-        // private static IEnumerable<CodeInstruction> transpilerDraw(IEnumerable<CodeInstruction> instructions) {
-        //     CodeMatcher matcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
+//         private static IEnumerable<CodeInstruction> transpilerDraw(IEnumerable<CodeInstruction> instructions) {
+//             CodeMatcher matcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
-        //     try {
-        //         matcher.MatchStartForward(
-        //                 new CodeMatch(OpCodes.Beq_S),
-        //                 new CodeMatch(OpCodes.Ret)
-        //             )
-        //             .ThrowIfInvalid("123");
-        //         Label label = (Label)matcher.Operand;
-        //         matcher.Advance(2)
-        //             .Insert(
-        //                 CodeInstruction.Call(() => preDraw())
-        //             );
-        //         matcher.Instruction.labels.Add(label);
-        //         matcher.Advance(1).Instruction.labels.Clear();
+//             try {
+//                 matcher.MatchStartForward(
+//                         new CodeMatch(OpCodes.Beq_S),
+//                         new CodeMatch(OpCodes.Ret)
+//                     )
+//                     .ThrowIfInvalid("123");
+//                 Label label = (Label)matcher.Operand;
+//                 matcher.Advance(2)
+//                     .Insert(
+//                         CodeInstruction.Call(() => preDraw())
+//                     );
+//                 matcher.Instruction.labels.Add(label);
+//                 matcher.Advance(1).Instruction.labels.Clear();
                 
-        //         matcher.MatchStartForward(new CodeMatch(OpCodes.Ret))
-        //             .ThrowIfInvalid("456");
-        //         List<Label> labels = new List<Label>(matcher.Instruction.labels);
-        //         if (labels.Count != 0) {
-        //             matcher.Instruction.labels.Clear();
-        //             matcher.Insert(
-        //                 CodeInstruction.Call(() => postDraw())
-        //             );
-        //             matcher.Instruction.labels = labels;
-        //         }
-        //         else {
-        //             matcher.Insert(
-        //                 CodeInstruction.Call(() => postDraw())
-        //             );
-        //         }
-        //     } catch (Exception e) {
-        //         Debug.WriteLine($"[ERROR] {e.Message}");
-        //         return instructions;
-        //     }
-
-        //     foreach (CodeInstruction i in matcher.Instructions()) {
-        //         Debug.WriteLine(i.ToString());
-        //     }
-        //     return matcher.Instructions();
-        // }
+//                 matcher.MatchStartForward(new CodeMatch(OpCodes.Ret))
+//                     .ThrowIfInvalid("456");
+//                 List<Label> labels = new List<Label>(matcher.Instruction.labels);
+//                 if (labels.Count != 0) {
+//                     matcher.Instruction.labels.Clear();
+//                     matcher.Insert(
+//                         CodeInstruction.Call(() => postDraw())
+//                     );
+//                     matcher.Instruction.labels = labels;
+//                 }
+//                 else {
+//                     matcher.Insert(
+//                         CodeInstruction.Call(() => postDraw())
+//                     );
+//                 }
+//             } catch (Exception e) {
+//                 Debug.WriteLine($"[ERROR] {e.Message}");
+//                 return instructions;
+//             }
+// #if DEBUG
+//             Debug.WriteLine("======");
+//             foreach (CodeInstruction i in matcher.Instructions()) {
+//                 Debug.WriteLine(i.ToString());
+//             }
+//             Debug.WriteLine("======");
+//             Debugger.Break();
+// #endif
+//             return matcher.Instructions();
+//         }
 
         private static void preDraw(object __instance) 
         {
-            // Debug.WriteLine((int)home_screen.GetValue(m_settings.GetValue(__instance)));
-            // Debug.WriteLine(Camera.CurrentScreen);
-            // Debugger.Break();
-            if ((int)home_screen.GetValue(m_settings.GetValue(__instance)) == Camera.CurrentScreenIndex1 && SpriteBatchManager.isMirror && !SpriteBatchManager.isMirroring)
+            if ((int)home_screen.GetValue(m_settings.GetValue(__instance)) == Camera.CurrentScreenIndex1 && SpriteBatchManager.isMirroring && !SpriteBatchManager.needMirror)
             {
                 SpriteBatchManager.Switch2MirrorBatch();
             }
@@ -98,7 +102,7 @@ namespace MirrorMode.Patching
 
         private static void preDrawText() 
         {
-            if (SpriteBatchManager.isMirror && !SpriteBatchManager.isMirroring)
+            if (SpriteBatchManager.isMirroring && !SpriteBatchManager.needMirror)
             {
                 SpriteBatchManager.Switch2NormalBatch();
             }
@@ -106,10 +110,10 @@ namespace MirrorMode.Patching
 
         private static void postDraw(object __instance) 
         {
-            if ((int)home_screen.GetValue(m_settings.GetValue(__instance)) == Camera.CurrentScreenIndex1 && SpriteBatchManager.isMirror && !SpriteBatchManager.isMirroring)
+            if ((int)home_screen.GetValue(m_settings.GetValue(__instance)) == Camera.CurrentScreenIndex1 && SpriteBatchManager.isMirroring && !SpriteBatchManager.needMirror)
             {
                 SpriteBatchManager.Switch2NormalBatch();
-                SpriteBatchManager.FlushMirror(mirrorFirst: true);
+                SpriteBatchManager.Flush(isMirrorFirst: true);
             }
         }
     }

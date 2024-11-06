@@ -10,6 +10,8 @@ using System;
 
 namespace MirrorMode.Patching
 {
+    // Mirror all things drawed between LevelManager.Currentcreen.Draw() and LevelManager.CurrentScreen.DrawForeground()
+    // (including m_entity_manager.Draw()), and set some flags.
     public class JumpGame
     {
         public JumpGame (Harmony harmony)
@@ -22,10 +24,11 @@ namespace MirrorMode.Patching
             );
         }
 
-        private static IEnumerable<CodeInstruction> transpileDraw(IEnumerable<CodeInstruction> instructions) {
+        private static IEnumerable<CodeInstruction> transpileDraw(IEnumerable<CodeInstruction> instructions /*, ILGenerator generator*/) {
             CodeMatcher matcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
             try {
+                // Find LevelManager.Currentcreen.Draw() Sthen insert preDrawBackground() before and move all labels from it
                 matcher.MatchStartForward(
                         new CodeMatch(OpCodes.Call, AccessTools.Method("JumpKing.Level.LevelManager:get_CurrentScreen")),
                         new CodeMatch(OpCodes.Callvirt, AccessTools.Method("JumpKing.Level.LevelScreen:Draw"))
@@ -38,6 +41,7 @@ namespace MirrorMode.Patching
                     );
                 matcher.Instruction.labels = labels;
 
+                // Find LevelManager.CurrentScreen.DrawForeground() then insert preDrawForeground(), postDrawForeground() on both side
                 matcher.MatchStartForward(
                         new CodeMatch(OpCodes.Call, AccessTools.Method("JumpKing.Level.LevelManager:get_CurrentScreen")),
                         new CodeMatch(OpCodes.Callvirt, AccessTools.Method("JumpKing.Level.LevelScreen:DrawForeground"))
@@ -50,36 +54,38 @@ namespace MirrorMode.Patching
                 Debug.WriteLine($"[ERROR] {e.Message}");
                 return instructions;
             }
-
+#if DEBUG
+            Debug.WriteLine("======");
             foreach (CodeInstruction i in matcher.Instructions()) {
                 Debug.WriteLine(i.ToString());
             }
+            Debug.WriteLine("======");
             Debugger.Break();
+#endif
             return matcher.Instructions();
         }
 
         private static void preDrawBackground() {
             if (MirrorMode.Preferences.IsEnabled) {
-                SpriteBatchManager.isMirror = true;
                 SpriteBatchManager.isMirroring = true;
+                SpriteBatchManager.needMirror = true;
                 SpriteBatchManager.StartMirrorBatch();
             }
         }
 
         private static void preDrawForeground() {
-            if (SpriteBatchManager.isMirror) {
-                SpriteBatchManager.FlushMirror();
+            if (SpriteBatchManager.isMirroring) {
+                SpriteBatchManager.Flush();
             }
         }
         private static void postDrawForeground() {
-            if (MirrorMode.Preferences.IsEnabled) {
-                SpriteBatchManager.isMirroring = false;
+            if (SpriteBatchManager.isMirroring) {
+                SpriteBatchManager.needMirror = false;
                 SpriteBatchManager.MirrorScreen();
             }
-
         }
         private static void postRemoveFlag() {
-            SpriteBatchManager.isMirror = false;
+            SpriteBatchManager.isMirroring = false;
             SpriteBatchManager.EndMirrorBatch();
             SpriteBatchManager.Switch2NormalBatch();
         }

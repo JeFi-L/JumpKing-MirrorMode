@@ -8,6 +8,7 @@ using JumpKing;
 
 namespace MirrorMode.Patching
 {
+    // Mirror cursor position along the center of the game screen if mirror mode enabled.
     public class DebugTeleport
     {
         public DebugTeleport (Harmony harmony)

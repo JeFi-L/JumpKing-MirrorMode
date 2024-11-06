@@ -6,18 +6,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MirrorMode.Models
 {
+    // Manage all mirroring functions.
     public static class SpriteBatchManager
     {
         public static readonly int HEIGHT = Game1.HEIGHT;
         public static readonly int WIDTH = Game1.WIDTH;
+        public static bool needMirror = false;
         public static bool isMirroring = false;
-        public static bool isMirror = false;
-        private static bool isMirrorBatching = false;
         private static readonly Matrix Mirror_X = Matrix.CreateTranslation(-WIDTH/2f, 0f, 0f) 
             * Matrix.CreateScale(-1f, 1f, 1f) 
             * Matrix.CreateTranslation(WIDTH/2f, 0f, 0f);
         private static readonly SpriteBatch OriginalBatch;
         private static readonly SpriteBatch MirrorBatch;
+        private static bool isMirrorBatching = false;
         private static readonly RenderTarget2D OriginalTarget;
         private static readonly RenderTarget2D MirrorTarget;
         private static readonly Rectangle GameSize;
@@ -52,8 +53,9 @@ namespace MirrorMode.Models
             MirrorBatch.End();
         }
 
-        public static void FlushMirror(bool mirrorFirst = false) {
-            if (mirrorFirst) {
+        // Flush current draw batch if needed.
+        public static void Flush(bool isMirrorFirst = false) {
+            if (isMirrorFirst) {
                 EndMirrorBatch();
                 StartMirrorBatch();
                 OriginalBatch.End();
@@ -75,6 +77,7 @@ namespace MirrorMode.Models
             Game1.spriteBatch = MirrorBatch;
         }
 
+        // Mirror full game screen.
         public static void MirrorScreen() {
             OriginalBatch.End();
             EndMirrorBatch();

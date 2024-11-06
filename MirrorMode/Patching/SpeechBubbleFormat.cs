@@ -7,6 +7,8 @@ using JumpKing;
 
 namespace MirrorMode.Patching
 {
+    // All dialogue of npc will use this class to draw the text, and it will be draw in entites.draw().
+    // So we mirror it again and put it on mirrored position to let those looks correctly.
     public class SpeechBubbleFormat
     {
         public SpeechBubbleFormat (Harmony harmony)
@@ -22,11 +24,11 @@ namespace MirrorMode.Patching
 
         private static void preDraw(ref Vector2 position, ref JK.SpeechBubbleFormat p_format) 
         {
-            if (SpriteBatchManager.isMirror) {
+            if (SpriteBatchManager.isMirroring) {
                 position.X = 480 - position.X;
                 p_format.direction = (p_format.direction == JK.SpeechBubbleFormat.DirectionX.Right) ? JK.SpeechBubbleFormat.DirectionX.Left : JK.SpeechBubbleFormat.DirectionX.Right;
                 p_format.anchor.X = (p_format.anchor.X == JK.SpeechBubbleFormat.DirectionX.Right) ? JK.SpeechBubbleFormat.DirectionX.Left : JK.SpeechBubbleFormat.DirectionX.Right;
-                if (SpriteBatchManager.isMirroring)
+                if (SpriteBatchManager.needMirror)
                 {
                     SpriteBatchManager.Switch2MirrorBatch();
                 }
@@ -34,10 +36,10 @@ namespace MirrorMode.Patching
         }
         private static void postDraw() 
         {
-            if (SpriteBatchManager.isMirroring)
+            if (SpriteBatchManager.isMirroring && SpriteBatchManager.needMirror)
             {
                 SpriteBatchManager.Switch2NormalBatch();
-                SpriteBatchManager.FlushMirror();
+                SpriteBatchManager.Flush();
             }
         }
     }

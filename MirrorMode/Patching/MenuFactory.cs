@@ -8,6 +8,7 @@ using MirrorMode.Models;
 
 namespace MirrorMode.Patching
 {
+    // If mirror mode enabled, PauseManager will draw a copy with entity draw() so disable it.
     public class MenuFactory
     {
         public MenuFactory (Harmony harmony)
@@ -22,7 +23,7 @@ namespace MirrorMode.Patching
 
         private static bool DisableBGDraw() 
         {
-            if (SpriteBatchManager.isMirroring)
+            if (SpriteBatchManager.isMirroring && SpriteBatchManager.needMirror)
             {
                 return false;
             }

@@ -5,6 +5,8 @@ using MirrorMode.Models;
 
 namespace MirrorMode.Patching
 {
+    // Some faded texts (ending credit, LocationNotification etc.) draw drawed between background and foreground,
+    // so we need to mirror it again to make it looks correctly.
     public class FadeTextEntity
     {
         public FadeTextEntity (Harmony harmony)
@@ -19,13 +21,13 @@ namespace MirrorMode.Patching
 
         private static void preDraw() 
         {
-            if (SpriteBatchManager.isMirroring) {
+            if (SpriteBatchManager.isMirroring && SpriteBatchManager.needMirror) {
                 SpriteBatchManager.Switch2MirrorBatch();
             }
         }
         private static void postDraw() 
         {
-            if (SpriteBatchManager.isMirroring) {
+            if (SpriteBatchManager.isMirroring && SpriteBatchManager.needMirror) {
                 SpriteBatchManager.Switch2NormalBatch();
             }
         }

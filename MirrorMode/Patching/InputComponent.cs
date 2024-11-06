@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace MirrorMode.Patching
 {
+    // Exchange input left and right when mirror mode is enabled.
     public class InputComponent
     {
         public InputComponent (Harmony harmony)

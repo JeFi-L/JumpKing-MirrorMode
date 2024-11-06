@@ -43,13 +43,13 @@ namespace MirrorMode
 
             Harmony harmony = new Harmony(HARMONY_IDENTIFIER);
 
-            new Patching.InputComponent(harmony);
-            new Patching.OldManEntity(harmony);
             new Patching.JumpGame(harmony);
+            new Patching.InputComponent(harmony);
+            new Patching.DebugTeleport(harmony);
             new Patching.FadeTextEntity(harmony);
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
-            new Patching.DebugTeleport(harmony);
+            new Patching.OldManEntity(harmony);
         }
 
         #region Menu Items
