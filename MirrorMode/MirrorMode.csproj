@@ -23,7 +23,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -53,9 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="*.cs" />
-    <Compile Include="menu\*.cs" />
-    <Compile Include="models\*.cs" />
-    <Compile Include="patching\*.cs" />
+    <Compile Include="Menu\*.cs" />
+    <Compile Include="Models\*.cs" />
+    <Compile Include="Patching\*.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

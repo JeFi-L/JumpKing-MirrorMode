@@ -77,7 +77,7 @@ namespace MirrorMode.Models
             Game1.spriteBatch = MirrorBatch;
         }
 
-        // Mirror full game screen.
+        // Mirror entire game screen.
         public static void MirrorScreen() {
             OriginalBatch.End();
             EndMirrorBatch();

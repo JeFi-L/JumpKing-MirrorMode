@@ -24,12 +24,12 @@ namespace MirrorMode
         [BeforeLevelLoad]
         public static void BeforeLevelLoad()
         {
+            AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 #if DEBUG
             Debugger.Launch();
             Harmony.DEBUG = true;
+            Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", $@"{AssemblyPath}\harmony.log.txt");
 #endif
-
-            AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             try
             {
                 Preferences = XmlSerializerHelper.Deserialize<Preferences>($@"{AssemblyPath}\{SETTINGS_FILE}");
@@ -50,6 +50,9 @@ namespace MirrorMode
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
             new Patching.OldManEntity(harmony);
+#if DEBUG
+            Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", null);
+#endif
         }
 
         #region Menu Items
