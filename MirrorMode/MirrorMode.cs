@@ -43,13 +43,15 @@ namespace MirrorMode
 
             Harmony harmony = new Harmony(HARMONY_IDENTIFIER);
 
-            new Patching.JumpGame(harmony);
+            new Patching.EndingPictureScreen(harmony);
             new Patching.InputComponent(harmony);
             new Patching.DebugTeleport(harmony);
             new Patching.FadeTextEntity(harmony);
             new Patching.MenuFactory(harmony);
             new Patching.SpeechBubbleFormat(harmony);
             new Patching.OldManEntity(harmony);
+            // Caution: Transpiler will make the methods call in function body can't be redirect after same harmony instance patching, so we better move it to last.
+            new Patching.JumpGame(harmony);
 #if DEBUG
             Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", null);
 #endif
@@ -61,6 +63,13 @@ namespace MirrorMode
         public static ToggleMirrorMode ToggleMirrorMode(object factory, GuiFormat format)
         {
             return new ToggleMirrorMode();
+        }
+
+        [PauseMenuItemSetting]
+        [MainMenuItemSetting]
+        public static ToggleMirrorBabeArt ToggleMirrorBabeArt(object factory, GuiFormat format)
+        {
+            return new ToggleMirrorBabeArt();
         }
         #endregion
 

@@ -54,14 +54,6 @@ namespace MirrorMode.Patching
                 Debug.WriteLine($"[ERROR] {e.Message}");
                 return instructions;
             }
-#if DEBUG
-            Debug.WriteLine("======");
-            foreach (CodeInstruction i in matcher.Instructions()) {
-                Debug.WriteLine(i.ToString());
-            }
-            Debug.WriteLine("======");
-            Debugger.Break();
-#endif
             return matcher.Instructions();
         }
 

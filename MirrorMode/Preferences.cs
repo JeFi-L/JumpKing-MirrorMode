@@ -17,6 +17,18 @@ namespace MirrorMode
             }
         }
 
+        private bool _isMirrorBabeArt = false;
+
+        public bool IsMirrorBabeArt
+        {
+            get => _isMirrorBabeArt;
+            set
+            {
+                _isMirrorBabeArt = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 
