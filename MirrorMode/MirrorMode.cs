@@ -47,7 +47,7 @@ namespace MirrorMode
             new Patching.InputComponent(harmony);
             new Patching.DebugTeleport(harmony);
             new Patching.FadeTextEntity(harmony);
-            new Patching.MenuFactory(harmony);
+            new Patching.PauseManager(harmony);
             new Patching.SpeechBubbleFormat(harmony);
             new Patching.OldManEntity(harmony);
             // Caution: Transpiler will make the methods call in function body can't be redirect after same harmony instance patching, so we better move it to last.

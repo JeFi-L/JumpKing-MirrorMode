@@ -5,15 +5,17 @@ using MirrorMode.Models;
 using Microsoft.Xna.Framework;
 using JumpKing;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace MirrorMode.Patching
 {
+    // Mirror babe art
     public class EndingPictureScreen
     {
         public EndingPictureScreen (Harmony harmony)
         {
-            // MethodInfo Draw = AccessTools.Method(typeof(JK.EndingPictureScreen), "Draw");
-            MethodInfo Draw = typeof(JK.EndingPictureScreen).GetMethod("Draw");
+            Type type = typeof(JK.EndingPictureScreen);
+            MethodInfo Draw = type.GetMethod("Draw");
             harmony.Patch(
                 Draw,
                 prefix: new HarmonyMethod(AccessTools.Method(typeof(EndingPictureScreen), nameof(preDraw))),

@@ -22,7 +22,7 @@ namespace MirrorMode.Patching
         
         public OldManEntity (Harmony harmony)
         {
-            Type type = Type.GetType("JumpKing.MiscEntities.OldManEntity, JumpKing");
+            Type type = AccessTools.TypeByName("JumpKing.MiscEntities.OldManEntity");
             MethodInfo Draw = type.GetMethod("Draw", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             harmony.Patch(
                 Draw,

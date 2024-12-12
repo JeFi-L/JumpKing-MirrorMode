@@ -13,7 +13,7 @@ namespace MirrorMode.Patching
     {
         public DebugTeleport (Harmony harmony)
         {
-            Type type = Type.GetType("JumpKing.Player.DebugTeleport, JumpKing");
+            Type type = AccessTools.TypeByName("JumpKing.Player.DebugTeleport");
             MethodInfo Click = type.GetMethod("Click", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             harmony.Patch(
                 Click,

@@ -16,7 +16,8 @@ namespace MirrorMode.Patching
     {
         public JumpGame (Harmony harmony)
         {
-            MethodInfo Draw = typeof(JK.JumpGame).GetMethod(nameof(JK.JumpGame.Draw));
+            Type type = typeof(JK.JumpGame);
+            MethodInfo Draw = type.GetMethod(nameof(JK.JumpGame.Draw));
             harmony.Patch(
                 Draw,
                 transpiler: new HarmonyMethod(AccessTools.Method(typeof(JumpGame), nameof(transpileDraw))),
@@ -28,7 +29,7 @@ namespace MirrorMode.Patching
             CodeMatcher matcher = new CodeMatcher(instructions /*, ILGenerator generator*/);
 
             try {
-                // Find LevelManager.Currentcreen.Draw() Sthen insert preDrawBackground() before and move all labels from it
+                // Find LevelManager.Currentcreen.Draw() then move all labels and insert preDrawBackground() before it 
                 matcher.MatchStartForward(
                         new CodeMatch(OpCodes.Call, AccessTools.Method("JumpKing.Level.LevelManager:get_CurrentScreen")),
                         new CodeMatch(OpCodes.Callvirt, AccessTools.Method("JumpKing.Level.LevelScreen:Draw"))

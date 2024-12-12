@@ -1,6 +1,7 @@
 using HarmonyLib;
 using JK = JumpKing.Player;
 using System.Reflection;
+using System;
 
 namespace MirrorMode.Patching
 {
@@ -9,9 +10,10 @@ namespace MirrorMode.Patching
     {
         public InputComponent (Harmony harmony)
         {
-            MethodInfo getState = typeof(JK.InputComponent).GetMethod(nameof(JK.InputComponent.GetState));
+            Type type = typeof(JK.InputComponent);
+            MethodInfo GetState = type.GetMethod(nameof(JK.InputComponent.GetState));
             harmony.Patch(
-                getState,
+                GetState,
                 postfix: new HarmonyMethod(AccessTools.Method(typeof(InputComponent), nameof(MirrorRL)))
             );
             

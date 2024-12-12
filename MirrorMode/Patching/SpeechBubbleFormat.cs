@@ -4,6 +4,7 @@ using System.Reflection;
 using MirrorMode.Models;
 using Microsoft.Xna.Framework;
 using JumpKing;
+using System;
 
 namespace MirrorMode.Patching
 {
@@ -13,7 +14,8 @@ namespace MirrorMode.Patching
     {
         public SpeechBubbleFormat (Harmony harmony)
         {
-            MethodInfo DrawText = typeof(JK.SpeechBubbleFormat).GetMethod(nameof(JK.SpeechBubbleFormat.DrawText));
+            Type type = typeof(JK.SpeechBubbleFormat);
+            MethodInfo DrawText = type.GetMethod(nameof(JK.SpeechBubbleFormat.DrawText));
             harmony.Patch(
                 DrawText,
                 prefix: new HarmonyMethod(AccessTools.Method(typeof(SpeechBubbleFormat), nameof(preDraw))),

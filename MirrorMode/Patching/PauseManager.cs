@@ -9,15 +9,15 @@ using MirrorMode.Models;
 namespace MirrorMode.Patching
 {
     // If mirror mode enabled, PauseManager will draw a copy with entity draw() so disable it.
-    public class MenuFactory
+    public class PauseManager
     {
-        public MenuFactory (Harmony harmony)
+        public PauseManager (Harmony harmony)
         {
-            Type type = Type.GetType("JumpKing.PauseMenu.PauseManager, JumpKing");
+            Type type = AccessTools.TypeByName("JumpKing.PauseMenu.PauseManager");
             MethodInfo Draw = type.GetMethod("Draw", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             harmony.Patch(
                 Draw,
-                prefix: new HarmonyMethod(AccessTools.Method(typeof(MenuFactory), nameof(DisableBGDraw)))
+                prefix: new HarmonyMethod(AccessTools.Method(typeof(PauseManager), nameof(DisableBGDraw)))
             );
         }
 

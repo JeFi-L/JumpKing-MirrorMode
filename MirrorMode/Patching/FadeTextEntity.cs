@@ -2,6 +2,7 @@ using HarmonyLib;
 using JK = JumpKing.GameManager;
 using System.Reflection;
 using MirrorMode.Models;
+using System;
 
 namespace MirrorMode.Patching
 {
@@ -11,7 +12,8 @@ namespace MirrorMode.Patching
     {
         public FadeTextEntity (Harmony harmony)
         {
-            MethodInfo Draw = typeof(JK.FadeTextEntity).GetMethod(nameof(JK.FadeTextEntity.Draw));
+            Type type = typeof(JK.FadeTextEntity);
+            MethodInfo Draw = type.GetMethod(nameof(JK.FadeTextEntity.Draw));
             harmony.Patch(
                 Draw,
                 prefix: new HarmonyMethod(AccessTools.Method(typeof(FadeTextEntity), nameof(preDraw))),
